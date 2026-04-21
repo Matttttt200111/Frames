@@ -14,8 +14,9 @@
     --ink: #f4f4f0;
     --muted: #8a8a85;
     --line: #222220;
-    --accent: #d4ff00;      /* stadium lime */
-    --accent-2: #ff3d00;    /* whistle red */
+    --accent: #b026ff;       /* neon purple */
+    --accent-glow: #c957ff;  /* softer purple for glows */
+    --accent-2: #ff3d00;     /* whistle red */
     --pitch: #0d2818;
     --chalk: #f4f4f0;
   }
@@ -152,7 +153,7 @@
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background:
-      radial-gradient(ellipse at 20% 40%, rgba(212,255,0,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 20% 40%, rgba(176,38,255,0.08) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 60%, rgba(255,61,0,0.06) 0%, transparent 50%);
     pointer-events: none;
   }
@@ -365,6 +366,8 @@
     font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.05em;
+    z-index: 3;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   }
 
   .stat-chip .num {
@@ -374,10 +377,42 @@
     display: block;
     letter-spacing: 0;
     line-height: 1;
+    text-shadow: 0 0 20px rgba(176,38,255,0.5);
   }
 
-  .chip-1 { top: 10%; right: 0; animation: float 6s ease-in-out infinite; }
-  .chip-2 { bottom: 15%; left: -20px; animation: float 7s ease-in-out infinite 1s; }
+  /* Pill-style chips (smaller badges) */
+  .pill-chip {
+    position: absolute;
+    background: var(--bg-2);
+    border: 1px solid var(--accent);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 3;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 20px rgba(176,38,255,0.2);
+  }
+
+  .pill-chip::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 1.5s infinite;
+  }
+
+  .chip-1 { top: 8%;  right: -10px;  animation: float 6s ease-in-out infinite; }
+  .chip-2 { bottom: 18%; left: -30px; animation: float 7s ease-in-out infinite 1s; }
+  .chip-3 { top: 45%; right: -40px; animation: float 5.5s ease-in-out infinite 0.5s; }
+  .chip-4 { top: 18%; left: -20px; animation: float 8s ease-in-out infinite 2s; }
+  .chip-5 { bottom: 5%; right: 10%; animation: float 6.5s ease-in-out infinite 1.5s; }
 
   @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -468,6 +503,9 @@
     margin-bottom: 40px;
     flex-wrap: wrap;
   }
+
+  .filters::-webkit-scrollbar { display: none; }
+  .filters { scrollbar-width: none; }
 
   .filter {
     padding: 8px 16px;
@@ -708,7 +746,7 @@
     position: relative;
     z-index: 2;
     background:
-      radial-gradient(ellipse at center, rgba(212,255,0,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at center, rgba(176,38,255,0.08) 0%, transparent 60%),
       var(--bg);
   }
 
@@ -1027,24 +1065,162 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ============ RESPONSIVE ============ */
-  @media (max-width: 900px) {
-    nav { padding: 16px 20px; }
-    .nav-links { display: none; }
-    .hero { grid-template-columns: 1fr; padding: 120px 20px 40px; }
-    .hero-visual { max-width: 400px; }
-    .shop, .how, .features { padding: 80px 20px; }
-    .how-grid { grid-template-columns: 1fr; }
+  @media (max-width: 1024px) {
     .features-grid { grid-template-columns: 1fr 1fr; }
-    .foot-grid { grid-template-columns: 1fr 1fr; }
-    .foot-brand { font-size: 40px; }
-    .section-head { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .section-head .meta { text-align: left; }
+    .how-grid { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
   }
 
-  @media (max-width: 500px) {
-    .features-grid { grid-template-columns: 1fr; }
-    .foot-grid { grid-template-columns: 1fr; }
-    .products { grid-template-columns: 1fr; }
+  @media (max-width: 768px) {
+    nav {
+      padding: 14px 16px;
+    }
+    .logo { font-size: 18px; gap: 8px; }
+    .logo-dot { width: 8px; height: 8px; }
+    .nav-links { display: none; }
+    .cart-btn { padding: 8px 12px; font-size: 10px; }
+
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 110px 20px 60px;
+      gap: 50px;
+      min-height: auto;
+    }
+
+    .hero-content { order: 2; text-align: left; }
+    .hero-visual {
+      order: 1;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(56px, 14vw, 90px);
+      margin-bottom: 20px;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      margin-bottom: 28px;
+    }
+
+    .hero-cta {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary, .btn-ghost {
+      text-align: center;
+      justify-content: center;
+      padding: 14px 24px;
+    }
+
+    /* Smaller, tighter chips on mobile */
+    .stat-chip {
+      padding: 8px 12px;
+      font-size: 9px;
+    }
+    .stat-chip .num { font-size: 20px; }
+
+    .pill-chip {
+      padding: 6px 10px;
+      font-size: 9px;
+    }
+
+    .chip-1 { top: 4%;  right: -8px; }
+    .chip-2 { bottom: 20%; left: -16px; }
+    .chip-3 { top: 45%; right: -20px; }
+    .chip-4 { top: 20%; left: -10px; }
+    .chip-5 { bottom: 4%; right: 15%; }
+
+    /* sections */
+    .shop, .how, .features { padding: 70px 20px; }
+    .section-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 28px;
+      margin-bottom: 40px;
+    }
+    .section-head h2 { font-size: 56px; }
+    .section-head .meta { text-align: left; }
+
+    .filters {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+      margin-bottom: 28px;
+    }
+    .filter { flex-shrink: 0; }
+
+    .products {
+      grid-template-columns: 1fr;
+      gap: 1px;
+    }
+
+    .product { padding: 20px; }
+    .product-visual { margin-bottom: 18px; }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .feature h4 { font-size: 28px; }
+
+    .how-step { padding: 36px 24px; }
+    .how-step-num { font-size: 80px; }
+    .how-step h4 { font-size: 28px; }
+
+    .cta-section { padding: 80px 20px; }
+    .cta-section h2 { font-size: clamp(48px, 13vw, 80px); }
+
+    /* marquee */
+    .marquee-item { font-size: 22px; gap: 40px; }
+    .marquee-track { gap: 40px; }
+
+    /* footer */
+    .foot-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    footer { padding: 50px 20px 24px; }
+    .foot-brand { font-size: 40px; }
+    .foot-bottom {
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+      padding-top: 24px;
+    }
+
+    /* cart drawer full-width on mobile */
+    .cart-drawer { width: 100%; }
+    .cart-head { padding: 18px 20px; }
+    .cart-head h3 { font-size: 26px; }
+    .cart-items { padding: 18px 20px; }
+    .cart-foot { padding: 18px 20px; }
+    .cart-total-val { font-size: 40px; }
+
+    /* toast */
+    .toast {
+      left: 16px; right: 16px;
+      transform: translateY(100px);
+      text-align: center;
+      justify-content: center;
+    }
+    .toast.show { transform: translateY(0); }
+  }
+
+  @media (max-width: 420px) {
+    .hero h1 { font-size: 52px; }
+    .section-head h2 { font-size: 44px; }
+    .hero-visual { max-width: 240px; }
+
+    /* Even tighter chip spacing on tiny screens */
+    .stat-chip .num { font-size: 18px; }
+    .chip-1, .chip-3 { right: -4px; }
+    .chip-2, .chip-4 { left: -6px; }
   }
 </style>
 </head>
@@ -1094,6 +1270,12 @@
       <span class="num">4K</span>
       HDR
     </div>
+    <div class="stat-chip chip-3">
+      <span class="num">120</span>
+      FPS
+    </div>
+    <div class="pill-chip chip-4">LIVE · LOOP</div>
+    <div class="pill-chip chip-5">15" OLED</div>
     <div class="frame-device">
       <div class="frame-screen">
         <svg class="pitch-svg" viewBox="0 0 200 250" preserveAspectRatio="none">
@@ -1116,9 +1298,9 @@
             <rect x="80" y="228" width="40" height="12"/>
           </g>
           <!-- ball trail -->
-          <path d="M 100 125 Q 130 80 140 30" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3" opacity="0.8"/>
-          <circle cx="140" cy="30" r="4" fill="#d4ff00"/>
-          <circle cx="140" cy="30" r="8" fill="#d4ff00" opacity="0.3"/>
+          <path d="M 100 125 Q 130 80 140 30" stroke="#b026ff" stroke-width="2" fill="none" stroke-dasharray="3 3" opacity="0.8"/>
+          <circle cx="140" cy="30" r="4" fill="#b026ff"/>
+          <circle cx="140" cy="30" r="8" fill="#b026ff" opacity="0.3"/>
         </svg>
         <div class="moment-label">LIVE · FULL TIME</div>
         <div class="moment-score">
@@ -1324,8 +1506,8 @@
             <rect x="60" y="10" width="80" height="30"/>
             <rect x="60" y="210" width="80" height="30"/>
           </g>
-          <path d="M 100 125 Q 130 80 140 30" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3" opacity="0.8"/>
-          <circle cx="140" cy="30" r="4" fill="#d4ff00"/>
+          <path d="M 100 125 Q 130 80 140 30" stroke="#b026ff" stroke-width="2" fill="none" stroke-dasharray="3 3" opacity="0.8"/>
+          <circle cx="140" cy="30" r="4" fill="#b026ff"/>
         </svg>`,
       court: `
         <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
@@ -1343,8 +1525,8 @@
             <path d="M 10 70 A 30 30 0 0 1 10 180" stroke="rgba(255,255,255,0.4)"/>
             <path d="M 190 70 A 30 30 0 0 0 190 180" stroke="rgba(255,255,255,0.4)"/>
           </g>
-          <path d="M 100 125 Q 150 60 170 30" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
-          <circle cx="170" cy="30" r="5" fill="#d4ff00"/>
+          <path d="M 100 125 Q 150 60 170 30" stroke="#b026ff" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+          <circle cx="170" cy="30" r="5" fill="#b026ff"/>
         </svg>`,
       'court-tennis': `
         <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
@@ -1356,8 +1538,8 @@
             <line x1="30" y1="125" x2="170" y2="125" stroke-width="3" stroke="rgba(255,255,255,0.9)"/>
             <line x1="100" y1="80" x2="100" y2="170"/>
           </g>
-          <path d="M 80 80 Q 110 110 140 170" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
-          <circle cx="140" cy="170" r="4" fill="#d4ff00"/>
+          <path d="M 80 80 Q 110 110 140 170" stroke="#b026ff" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+          <circle cx="140" cy="170" r="4" fill="#b026ff"/>
         </svg>`,
       track: `
         <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
@@ -1365,7 +1547,7 @@
           <path d="M 20 50 Q 100 20 180 50 L 180 200 Q 100 230 20 200 Z" fill="#2a2a2a" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
           <path d="M 40 70 Q 100 45 160 70 L 160 180 Q 100 205 40 180 Z" fill="#1a1a1a" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
           <path d="M 60 90 Q 100 70 140 90 L 140 160 Q 100 180 60 160 Z" fill="#2a2a2a" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <line x1="100" y1="20" x2="100" y2="45" stroke="#d4ff00" stroke-width="2"/>
+          <line x1="100" y1="20" x2="100" y2="45" stroke="#b026ff" stroke-width="2"/>
           <circle cx="100" cy="125" r="3" fill="#ff3d00"/>
           <circle cx="100" cy="125" r="8" fill="#ff3d00" opacity="0.3"/>
         </svg>`,
@@ -1373,9 +1555,9 @@
         <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
           <rect width="200" height="250" fill="#a0522d"/>
           ${[0,40,80,120,160,200,240].map(x => `<line x1="0" y1="${x}" x2="200" y2="${x}" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>`).join('')}
-          <line x1="0" y1="40" x2="200" y2="40" stroke="#d4ff00" stroke-width="3"/>
+          <line x1="0" y1="40" x2="200" y2="40" stroke="#b026ff" stroke-width="3"/>
           <text x="100" y="35" text-anchor="middle" fill="#0a0a0a" font-family="Arial" font-size="10" font-weight="900">FINISH</text>
-          <circle cx="60" cy="170" r="4" fill="#d4ff00"/>
+          <circle cx="60" cy="170" r="4" fill="#b026ff"/>
           <circle cx="100" cy="150" r="4" fill="#ff3d00"/>
           <circle cx="140" cy="180" r="4" fill="white"/>
         </svg>`
@@ -1383,7 +1565,7 @@
     return `
       <div style="position:relative;width:100%;height:100%">
         ${scenes[scene] || scenes.pitch}
-        <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.5);color:#d4ff00;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;backdrop-filter:blur(4px);">● ${label}</div>
+        <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.5);color:#b026ff;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;backdrop-filter:blur(4px);">● ${label}</div>
         <div style="position:absolute;bottom:12px;right:12px;font-family:'Bebas Neue',sans-serif;color:white;font-size:24px;letter-spacing:0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.8);">${score}</div>
       </div>`;
   }
