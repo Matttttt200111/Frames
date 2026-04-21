@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATCHDAY FRAMES — Own the Moment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-2: #111111;
+    --ink: #f4f4f0;
+    --muted: #8a8a85;
+    --line: #222220;
+    --accent: #d4ff00;      /* stadium lime */
+    --accent-2: #ff3d00;    /* whistle red */
+    --pitch: #0d2818;
+    --chalk: #f4f4f0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ GRAIN OVERLAY ============ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0);
+    background-size: 3px 3px;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10,10,10,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-links a {
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    position: relative;
+  }
+
+  .nav-links a:hover { opacity: 1; }
+  .nav-links a:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .cart-btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s;
+  }
+
+  .cart-btn:hover { transform: translateY(-2px); }
+
+  .cart-count {
+    background: var(--bg);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 10px;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    padding: 140px 40px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 40%, rgba(212,255,0,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 60%, rgba(255,61,0,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* stadium grid lines */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(244,244,240,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244,244,240,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.2s forwards;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 9vw, 160px);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeIn 1s 0.4s forwards;
+  }
+
+  .hero h1 .outline {
+    -webkit-text-stroke: 2px var(--ink);
+    color: transparent;
+  }
+
+  .hero h1 .lime {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeIn 1s 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeIn 1s 0.8s forwards;
+  }
+
+  .btn-primary, .btn-ghost {
+    padding: 16px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    background: var(--ink);
+    transform: translateY(-3px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ============ HERO PRODUCT VISUAL ============ */
+  .hero-visual {
+    position: relative;
+    z-index: 2;
+    aspect-ratio: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 1.2s 0.6s forwards;
+  }
+
+  .frame-device {
+    width: 80%;
+    aspect-ratio: 4/5;
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.6),
+      0 0 0 1px rgba(255,255,255,0.05),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+    transform: rotate(-3deg);
+    transition: transform 0.5s;
+  }
+
+  .frame-device:hover { transform: rotate(0deg) scale(1.02); }
+
+  .frame-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1e4d2b 0%, #0d2818 50%, #1a3a24 100%);
+  }
+
+  /* Football pitch illustration */
+  .pitch-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .moment-label {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.4);
+    padding: 6px 10px;
+    backdrop-filter: blur(4px);
+    z-index: 3;
+  }
+
+  .moment-label::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent-2);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  .moment-score {
+    position: absolute;
+    bottom: 20px; left: 20px; right: 20px;
+    z-index: 3;
+    font-family: 'Bebas Neue', sans-serif;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .moment-score .big { font-size: 48px; line-height: 0.9; }
+  .moment-score .small { font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; opacity: 0.7; }
+
+  /* floating stats */
+  .stat-chip {
+    position: absolute;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .stat-chip .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    display: block;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .chip-1 { top: 10%; right: 0; animation: float 6s ease-in-out infinite; }
+  .chip-2 { bottom: 15%; left: -20px; animation: float 7s ease-in-out infinite 1s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ MARQUEE ============ */
+  .marquee {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 20px 0;
+    overflow: hidden;
+    background: var(--bg-2);
+    position: relative;
+    z-index: 2;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 60px;
+    animation: scroll 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    color: var(--ink);
+  }
+
+  .marquee-item::after {
+    content: '●';
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ============ SHOP ============ */
+  .shop {
+    padding: 120px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 40px;
+  }
+
+  .section-head h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 96px);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+  }
+
+  .section-head .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .filter {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter.active, .filter:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .product {
+    background: var(--bg);
+    padding: 32px;
+    position: relative;
+    transition: background 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product:hover { background: var(--bg-2); }
+
+  .product-num {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .product-visual {
+    aspect-ratio: 4/5;
+    background: #0d2818;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  .product:hover .product-visual svg { transform: scale(1.05); }
+  .product-visual svg { transition: transform 0.6s; }
+
+  .product-tag {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: var(--accent-2);
+    color: white;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  .product-tag.lime { background: var(--accent); color: var(--bg); }
+
+  .product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-sport {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .product h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .product-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  .product-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.02em;
+  }
+
+  .price .cur { font-size: 14px; color: var(--muted); vertical-align: super; margin-right: 2px; }
+
+  .add-btn {
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 10px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .add-btn:hover {
+    background: var(--accent);
+  }
+
+  .add-btn.added {
+    background: var(--accent);
+  }
+
+  /* ============ FEATURES ============ */
+  .features {
+    padding: 120px 40px;
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    z-index: 2;
+  }
+
+  .features-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+
+  .feature {
+    padding-top: 24px;
+    border-top: 2px solid var(--accent);
+  }
+
+  .feature-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+  }
+
+  .feature h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .feature p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ============ HOW IT WORKS ============ */
+  .how {
+    padding: 120px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 60px;
+  }
+
+  .how-step {
+    background: var(--bg);
+    padding: 48px 32px;
+    position: relative;
+  }
+
+  .how-step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    line-height: 1;
+    -webkit-text-stroke: 2px var(--accent);
+    color: transparent;
+    margin-bottom: 24px;
+  }
+
+  .how-step h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .how-step p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ============ CTA ============ */
+  .cta-section {
+    padding: 120px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    background:
+      radial-gradient(ellipse at center, rgba(212,255,0,0.08) 0%, transparent 60%),
+      var(--bg);
+  }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 10vw, 180px);
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    max-width: 1400px;
+    margin: 0 auto 40px;
+  }
+
+  .cta-section .outline {
+    -webkit-text-stroke: 2px var(--ink);
+    color: transparent;
+  }
+
+  .cta-section .lime { color: var(--accent); font-style: italic; }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 60px 40px 30px;
+    border-top: 1px solid var(--line);
+    position: relative;
+    z-index: 2;
+  }
+
+  .foot-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .foot-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 0.9;
+    max-width: 500px;
+  }
+
+  .foot-col h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .foot-col a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+
+  .foot-col a:hover { color: var(--ink); }
+
+  .foot-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ============ CART DRAWER ============ */
+  .cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .cart-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cart-drawer {
+    position: fixed;
+    top: 0; right: 0;
+    bottom: 0;
+    width: min(480px, 100%);
+    background: var(--bg);
+    border-left: 1px solid var(--line);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-drawer.open { transform: translateX(0); }
+
+  .cart-head {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cart-head h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.02em;
+  }
+
+  .cart-close {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 36px; height: 36px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+  }
+
+  .cart-close:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+  }
+
+  .cart-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+
+  .cart-empty .big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+  }
+
+  .cart-item-img {
+    width: 80px; height: 80px;
+    background: var(--pitch);
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cart-item-info h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .cart-item-info .sport {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .qty-btn {
+    width: 24px; height: 24px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .qty-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .qty-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .cart-item-right {
+    text-align: right;
+  }
+
+  .cart-item-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .cart-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .cart-remove:hover { color: var(--accent-2); }
+
+  .cart-foot {
+    padding: 24px 32px;
+    border-top: 1px solid var(--line);
+  }
+
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+
+  .cart-total-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  .cart-total-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--accent);
+  }
+
+  .cart-total-val .cur {
+    font-size: 18px;
+    color: var(--muted);
+    vertical-align: super;
+    margin-right: 2px;
+  }
+
+  .checkout-btn {
+    width: 100%;
+    padding: 20px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .checkout-btn:hover { background: var(--ink); }
+  .checkout-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .cart-note {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 14px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    z-index: 300;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 120px 20px 40px; }
+    .hero-visual { max-width: 400px; }
+    .shop, .how, .features { padding: 80px 20px; }
+    .how-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .foot-brand { font-size: 40px; }
+    .section-head { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .section-head .meta { text-align: left; }
+  }
+
+  @media (max-width: 500px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; }
+    .products { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    MATCHDAY FRAMES
+  </div>
+  <div class="nav-links">
+    <a href="#shop">Shop</a>
+    <a href="#how">How it works</a>
+    <a href="#features">The tech</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button class="cart-btn" onclick="toggleCart()">
+    Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">Season 25/26 — Collection 01</div>
+    <h1>
+      <span class="outline">OWN</span><br>
+      <span>THE</span><br>
+      <span class="lime">MOMENT</span>
+    </h1>
+    <p class="hero-sub">
+      Legendary goals. Buzzer-beaters. Finish-line roars. Framed in 4K, motion-rendered, and hung on your wall. Not prints — living moments that replay on loop.
+    </p>
+    <div class="hero-cta">
+      <a href="#shop" class="btn-primary">Shop the drop →</a>
+      <a href="#how" class="btn-ghost">Watch the film</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="stat-chip chip-1">
+      <span class="num">89'</span>
+      MINUTE
+    </div>
+    <div class="stat-chip chip-2">
+      <span class="num">4K</span>
+      HDR
+    </div>
+    <div class="frame-device">
+      <div class="frame-screen">
+        <svg class="pitch-svg" viewBox="0 0 200 250" preserveAspectRatio="none">
+          <!-- grass stripes -->
+          <rect width="200" height="250" fill="#0d2818"/>
+          <rect y="0" width="200" height="25" fill="#0f2e1c"/>
+          <rect y="50" width="200" height="25" fill="#0f2e1c"/>
+          <rect y="100" width="200" height="25" fill="#0f2e1c"/>
+          <rect y="150" width="200" height="25" fill="#0f2e1c"/>
+          <rect y="200" width="200" height="25" fill="#0f2e1c"/>
+          <!-- pitch lines -->
+          <g stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none">
+            <rect x="10" y="10" width="180" height="230"/>
+            <line x1="10" y1="125" x2="190" y2="125"/>
+            <circle cx="100" cy="125" r="25"/>
+            <circle cx="100" cy="125" r="1.5" fill="rgba(255,255,255,0.3)"/>
+            <rect x="60" y="10" width="80" height="30"/>
+            <rect x="60" y="210" width="80" height="30"/>
+            <rect x="80" y="10" width="40" height="12"/>
+            <rect x="80" y="228" width="40" height="12"/>
+          </g>
+          <!-- ball trail -->
+          <path d="M 100 125 Q 130 80 140 30" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3" opacity="0.8"/>
+          <circle cx="140" cy="30" r="4" fill="#d4ff00"/>
+          <circle cx="140" cy="30" r="8" fill="#d4ff00" opacity="0.3"/>
+        </svg>
+        <div class="moment-label">LIVE · FULL TIME</div>
+        <div class="moment-score">
+          <div>
+            <div class="small">HOME</div>
+            <div class="big">3</div>
+          </div>
+          <div style="text-align:right">
+            <div class="small">AWAY</div>
+            <div class="big">2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">INSTANT CLASSICS</span>
+    <span class="marquee-item">HDR 4K DISPLAY</span>
+    <span class="marquee-item">LICENSED FOOTAGE</span>
+    <span class="marquee-item">1,000+ MOMENTS</span>
+    <span class="marquee-item">WORLDWIDE SHIPPING</span>
+    <span class="marquee-item">INSTANT CLASSICS</span>
+    <span class="marquee-item">HDR 4K DISPLAY</span>
+    <span class="marquee-item">LICENSED FOOTAGE</span>
+    <span class="marquee-item">1,000+ MOMENTS</span>
+    <span class="marquee-item">WORLDWIDE SHIPPING</span>
+  </div>
+</div>
+
+<!-- SHOP -->
+<section class="shop" id="shop">
+  <div class="section-head">
+    <h2>THE<br>DROP</h2>
+    <div class="meta">
+      [ Collection 01 / 12 Frames ]<br>
+      Ships in 48h · Free EU delivery
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="filter active" data-filter="all">All</button>
+    <button class="filter" data-filter="football">Football</button>
+    <button class="filter" data-filter="basketball">Basketball</button>
+    <button class="filter" data-filter="tennis">Tennis</button>
+    <button class="filter" data-filter="f1">F1</button>
+    <button class="filter" data-filter="olympics">Olympics</button>
+  </div>
+
+  <div class="products" id="products"></div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-num">01 / SPEC</div>
+      <h4>15" 4K HDR</h4>
+      <p>Matte IPS panel calibrated for stadium lights and floodlit greens. Anti-glare, wide viewing angle.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-num">02 / FEED</div>
+      <h4>Over-the-air drops</h4>
+      <p>New moments push monthly. Your frame updates itself while you sleep. Archive stays yours forever.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-num">03 / BUILD</div>
+      <h4>Brushed aluminum</h4>
+      <p>Single-piece CNC chassis, matte black finish, gorilla glass. Wall-mount or easel stand included.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-num">04 / SOURCE</div>
+      <h4>Fully licensed</h4>
+      <p>Official federation footage, remastered. Every moment arrives with certificate of authenticity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-head">
+    <h2>HOW<br>IT PLAYS</h2>
+    <div class="meta">[ Three steps to greatness ]</div>
+  </div>
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="how-step-num">01</div>
+      <h4>Pick your moment</h4>
+      <p>Browse the drop — goals, records, buzzer-beaters. Every frame comes pre-loaded with one iconic piece plus the full archive.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-num">02</div>
+      <h4>Hang & plug in</h4>
+      <p>Wall-mount kit included. Connect to Wi-Fi in 30 seconds. The frame handles the rest — brightness, schedules, updates.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-num">03</div>
+      <h4>Relive, on loop</h4>
+      <p>Swap moments from the app. New clips drop monthly. Your living room becomes the stadium tunnel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>
+    <span class="outline">THE GOAL</span><br>
+    <span class="lime">NEVER ENDS.</span>
+  </h2>
+  <a href="#shop" class="btn-primary">Shop the drop →</a>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand">MATCHDAY<br>FRAMES.</div>
+      <p style="color:var(--muted); margin-top: 20px; font-size: 14px; max-width: 320px; line-height: 1.6;">
+        Digital frames loaded with sport's greatest moments. Designed in Ljubljana, shipped worldwide.
+      </p>
+    </div>
+    <div class="foot-col">
+      <h5>Shop</h5>
+      <a href="#">Football</a>
+      <a href="#">Basketball</a>
+      <a href="#">Tennis</a>
+      <a href="#">F1 & Olympics</a>
+      <a href="#">Gift cards</a>
+    </div>
+    <div class="foot-col">
+      <h5>Company</h5>
+      <a href="#">About</a>
+      <a href="#">Licensing</a>
+      <a href="#">Press</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="foot-col">
+      <h5>Support</h5>
+      <a href="#">Shipping</a>
+      <a href="#">Returns</a>
+      <a href="#">Warranty</a>
+      <a href="mailto:hello@matchdayframes.com">hello@matchdayframes.com</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div>© 2026 MATCHDAY FRAMES</div>
+    <div>MADE IN SLOVENIA · EST. 2025</div>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" onclick="toggleCart()"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h3>YOUR CART</h3>
+    <button class="cart-close" onclick="toggleCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-total">
+      <div class="cart-total-label">Total</div>
+      <div class="cart-total-val"><span class="cur">€</span><span id="cartTotal">0</span></div>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>Checkout →</button>
+    <div class="cart-note">Free EU shipping · 30-day returns · 2-year warranty</div>
+  </div>
+</aside>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Added to cart</div>
+
+<script>
+  // ============ PRODUCT DATA ============
+  const products = [
+    { id: 1, name: "Stoppage Time", sport: "football", sportLabel: "Football", desc: "The 94th-minute header that won the treble. Three angles, slow-mo finish.", price: 349, tag: "BESTSELLER", tagLime: true, moment: { score: "3-2", label: "90+4'", scene: "pitch" } },
+    { id: 2, name: "The Bicycle", sport: "football", sportLabel: "Football", desc: "Overhead kick from the edge of the box. Captured in 120fps, remastered.", price: 379, tag: "NEW", tagLime: false, moment: { score: "1-0", label: "67'", scene: "pitch" } },
+    { id: 3, name: "Buzzer Beater", sport: "basketball", sportLabel: "Basketball", desc: "Half-court shot, 0.3 seconds on the clock. Game seven. Championship won.", price: 349, tag: null, tagLime: false, moment: { score: "98-97", label: "0.3s", scene: "court" } },
+    { id: 4, name: "The Dunk", sport: "basketball", sportLabel: "Basketball", desc: "Poster dunk over a 7-footer. The bench reaction edit included.", price: 329, tag: null, tagLime: false, moment: { score: "88-76", label: "Q4", scene: "court" } },
+    { id: 5, name: "Championship Point", sport: "tennis", sportLabel: "Tennis", desc: "Centre court, fifth set, tie-break. Ace down the T. Trophy lifted.", price: 369, tag: "LIMITED", tagLime: false, moment: { score: "6-4", label: "SET 5", scene: "court-tennis" } },
+    { id: 6, name: "Chequered Flag", sport: "f1", sportLabel: "Formula 1", desc: "Final lap, last corner, 0.08s gap. Engine roars included in the cut.", price: 399, tag: "NEW", tagLime: false, moment: { score: "P1", label: "LAP 71", scene: "track" } },
+    { id: 7, name: "The Finish Line", sport: "olympics", sportLabel: "Olympics", desc: "100m final. World record broken. Crowd goes silent then erupts.", price: 349, tag: null, tagLime: false, moment: { score: "9.58", label: "FINAL", scene: "track-run" } },
+    { id: 8, name: "Gold Medal", sport: "olympics", sportLabel: "Olympics", desc: "Anthem plays. Flag rises. The tear before the podium wave.", price: 339, tag: null, tagLime: false, moment: { score: "GOLD", label: "PODIUM", scene: "track-run" } },
+    { id: 9, name: "Hat-Trick", sport: "football", sportLabel: "Football", desc: "Three goals, one half. Signed certificate of the fixture included.", price: 389, tag: "SIGNED", tagLime: true, moment: { score: "3-0", label: "HT", scene: "pitch" } },
+    { id: 10, name: "Triple Double", sport: "basketball", sportLabel: "Basketball", desc: "30 points, 10 rebounds, 12 assists. Highlight reel of every touch.", price: 339, tag: null, tagLime: false, moment: { score: "112-108", label: "OT", scene: "court" } },
+    { id: 11, name: "Grand Slam", sport: "tennis", sportLabel: "Tennis", desc: "Fourth major of the year. Match point from every broadcast angle.", price: 369, tag: "LIMITED", tagLime: false, moment: { score: "7-5", label: "SET 4", scene: "court-tennis" } },
+    { id: 12, name: "Pole Position", sport: "f1", sportLabel: "Formula 1", desc: "Qualifying flying lap, track record, sector purple. Telemetry overlay.", price: 379, tag: null, tagLime: false, moment: { score: "1:16.3", label: "Q3", scene: "track" } }
+  ];
+
+  // ============ SVG SCENES ============
+  function sceneSvg(scene, score, label) {
+    const scenes = {
+      pitch: `
+        <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
+          <rect width="200" height="250" fill="#0d2818"/>
+          ${[0,50,100,150,200].map(y => `<rect y="${y}" width="200" height="25" fill="#0f2e1c"/>`).join('')}
+          <g stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none">
+            <rect x="10" y="10" width="180" height="230"/>
+            <line x1="10" y1="125" x2="190" y2="125"/>
+            <circle cx="100" cy="125" r="25"/>
+            <rect x="60" y="10" width="80" height="30"/>
+            <rect x="60" y="210" width="80" height="30"/>
+          </g>
+          <path d="M 100 125 Q 130 80 140 30" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3" opacity="0.8"/>
+          <circle cx="140" cy="30" r="4" fill="#d4ff00"/>
+        </svg>`,
+      court: `
+        <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
+          <rect width="200" height="250" fill="#8b4513"/>
+          <rect width="200" height="250" fill="url(#wood)" opacity="0.3"/>
+          <defs>
+            <pattern id="wood" width="4" height="250" patternUnits="userSpaceOnUse">
+              <rect width="2" height="250" fill="rgba(0,0,0,0.2)"/>
+            </pattern>
+          </defs>
+          <g stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none">
+            <rect x="10" y="10" width="180" height="230"/>
+            <line x1="10" y1="125" x2="190" y2="125"/>
+            <circle cx="100" cy="125" r="20"/>
+            <path d="M 10 70 A 30 30 0 0 1 10 180" stroke="rgba(255,255,255,0.4)"/>
+            <path d="M 190 70 A 30 30 0 0 0 190 180" stroke="rgba(255,255,255,0.4)"/>
+          </g>
+          <path d="M 100 125 Q 150 60 170 30" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+          <circle cx="170" cy="30" r="5" fill="#d4ff00"/>
+        </svg>`,
+      'court-tennis': `
+        <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
+          <rect width="200" height="250" fill="#1e5a3d"/>
+          <g stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none">
+            <rect x="30" y="30" width="140" height="190"/>
+            <rect x="50" y="30" width="100" height="190"/>
+            <line x1="50" y1="125" x2="150" y2="125"/>
+            <line x1="30" y1="125" x2="170" y2="125" stroke-width="3" stroke="rgba(255,255,255,0.9)"/>
+            <line x1="100" y1="80" x2="100" y2="170"/>
+          </g>
+          <path d="M 80 80 Q 110 110 140 170" stroke="#d4ff00" stroke-width="2" fill="none" stroke-dasharray="3 3"/>
+          <circle cx="140" cy="170" r="4" fill="#d4ff00"/>
+        </svg>`,
+      track: `
+        <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
+          <rect width="200" height="250" fill="#1a1a1a"/>
+          <path d="M 20 50 Q 100 20 180 50 L 180 200 Q 100 230 20 200 Z" fill="#2a2a2a" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <path d="M 40 70 Q 100 45 160 70 L 160 180 Q 100 205 40 180 Z" fill="#1a1a1a" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <path d="M 60 90 Q 100 70 140 90 L 140 160 Q 100 180 60 160 Z" fill="#2a2a2a" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <line x1="100" y1="20" x2="100" y2="45" stroke="#d4ff00" stroke-width="2"/>
+          <circle cx="100" cy="125" r="3" fill="#ff3d00"/>
+          <circle cx="100" cy="125" r="8" fill="#ff3d00" opacity="0.3"/>
+        </svg>`,
+      'track-run': `
+        <svg viewBox="0 0 200 250" preserveAspectRatio="none" style="width:100%;height:100%">
+          <rect width="200" height="250" fill="#a0522d"/>
+          ${[0,40,80,120,160,200,240].map(x => `<line x1="0" y1="${x}" x2="200" y2="${x}" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>`).join('')}
+          <line x1="0" y1="40" x2="200" y2="40" stroke="#d4ff00" stroke-width="3"/>
+          <text x="100" y="35" text-anchor="middle" fill="#0a0a0a" font-family="Arial" font-size="10" font-weight="900">FINISH</text>
+          <circle cx="60" cy="170" r="4" fill="#d4ff00"/>
+          <circle cx="100" cy="150" r="4" fill="#ff3d00"/>
+          <circle cx="140" cy="180" r="4" fill="white"/>
+        </svg>`
+    };
+    return `
+      <div style="position:relative;width:100%;height:100%">
+        ${scenes[scene] || scenes.pitch}
+        <div style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.5);color:#d4ff00;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;backdrop-filter:blur(4px);">● ${label}</div>
+        <div style="position:absolute;bottom:12px;right:12px;font-family:'Bebas Neue',sans-serif;color:white;font-size:24px;letter-spacing:0.02em;text-shadow:0 2px 8px rgba(0,0,0,0.8);">${score}</div>
+      </div>`;
+  }
+
+  // ============ STATE ============
+  let cart = [];
+  let activeFilter = 'all';
+
+  // ============ RENDER PRODUCTS ============
+  function renderProducts() {
+    const grid = document.getElementById('products');
+    const filtered = activeFilter === 'all' ? products : products.filter(p => p.sport === activeFilter);
+
+    grid.innerHTML = filtered.map((p, i) => `
+      <article class="product" data-id="${p.id}">
+        <div class="product-num">NO. ${String(i+1).padStart(2,'0')}</div>
+        <div class="product-visual">
+          ${p.tag ? `<span class="product-tag ${p.tagLime ? 'lime' : ''}">${p.tag}</span>` : ''}
+          ${sceneSvg(p.moment.scene, p.moment.score, p.moment.label)}
+        </div>
+        <div class="product-info">
+          <div class="product-sport">${p.sportLabel}</div>
+          <h3>${p.name}</h3>
+          <p class="product-desc">${p.desc}</p>
+          <div class="product-foot">
+            <div class="price"><span class="cur">€</span>${p.price}</div>
+            <button class="add-btn" onclick="addToCart(${p.id})">Add to cart</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  // ============ FILTERS ============
+  document.querySelectorAll('.filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderProducts();
+    });
+  });
+
+  // ============ CART ============
+  function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    const existing = cart.find(i => i.id === id);
+
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ ...product, qty: 1 });
+    }
+
+    updateCartUI();
+    showToast(`✓ ${product.name} added`);
+
+    // Visual feedback
+    const btn = document.querySelector(`.product[data-id="${id}"] .add-btn`);
+    if (btn) {
+      btn.classList.add('added');
+      btn.textContent = '✓ Added';
+      setTimeout(() => {
+        btn.classList.remove('added');
+        btn.textContent = 'Add to cart';
+      }, 1200);
+    }
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(i => i.id !== id);
+    updateCartUI();
+  }
+
+  function updateQty(id, delta) {
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) {
+      removeFromCart(id);
+    } else {
+      updateCartUI();
+    }
+  }
+
+  function updateCartUI() {
+    const count = cart.reduce((sum, i) => sum + i.qty, 0);
+    const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+    document.getElementById('cartCount').textContent = count;
+    document.getElementById('cartTotal').textContent = total;
+    document.getElementById('checkoutBtn').disabled = cart.length === 0;
+
+    const itemsEl = document.getElementById('cartItems');
+    if (cart.length === 0) {
+      itemsEl.innerHTML = `
+        <div class="cart-empty">
+          <div class="big">EMPTY.</div>
+          <p style="font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.15em;">
+            Your moments await
+          </p>
+        </div>`;
+      return;
+    }
+
+    itemsEl.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-img">${sceneSvg(item.moment.scene, item.moment.score, item.moment.label)}</div>
+        <div class="cart-item-info">
+          <div class="sport">${item.sportLabel}</div>
+          <h4>${item.name}</h4>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+          </div>
+        </div>
+        <div class="cart-item-right">
+          <div class="cart-item-price">€${item.price * item.qty}</div>
+          <button class="cart-remove" onclick="removeFromCart(${item.id})">Remove</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleCart() {
+    document.getElementById('cartDrawer').classList.toggle('open');
+    document.querySelector('.cart-overlay').classList.toggle('open');
+  }
+
+  function checkout() {
+    const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    alert(`Order confirmed — €${total}\n\nYour moments are being prepared. Ship confirmation coming to your inbox.\n\n(Connect Stripe / PayPal for live checkout)`);
+    cart = [];
+    updateCartUI();
+    toggleCart();
+  }
+
+  // ============ TOAST ============
+  let toastTimeout;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // ============ INIT ============
+  renderProducts();
+  updateCartUI();
+</script>
+</body>
+</html>
